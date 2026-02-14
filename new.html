@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JSQUARE ❤️ Love</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:radial-gradient(circle at top,#ff4e8a,#5b0060);
+    color:white;
+    text-align:center;
+    overflow-x:hidden;
+    overflow-y:auto;
+}
+
+.page{display:none; min-height:100vh; padding-top:120px;}
+.active{display:block;}
+
+h1{font-size:40px;text-shadow:0 0 15px white;}
+
+button{
+    padding:15px 35px;
+    font-size:18px;
+    border:none;
+    border-radius:30px;
+    cursor:pointer;
+    margin:20px;
+    transition:0.4s ease;
+}
+
+.yesBtn{background:gold;color:black;}
+.noBtn{background:crimson;color:white;position:relative;}
+
+#passwordScreen{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:black;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    z-index:2000;
+}
+
+input{
+    padding:10px;
+    font-size:18px;
+    border-radius:10px;
+    border:none;
+    margin:10px;
+}
+
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    pointer-events:none;
+}
+
+/* VIDEO AND CENTER BUTTON */
+.videoContainer{
+    position:relative;
+    width:80%;
+    margin:auto;
+    margin-top:30px;
+}
+
+#Video{
+    width:100%;
+    border-radius:20px;
+    box-shadow:0 0 30px pink;
+}
+
+#playPauseBtn{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:50px;
+    background:rgba(0,0,0,0.5);
+    border:none;
+    color:white;
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    cursor:pointer;
+    transition:opacity 0.4s ease;
+    opacity:1;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PASSWORD -->
+<div id="passwordScreen">
+    <h1>Enter Secret Love Password ❤️</h1>
+    <input type="password" id="passInput" placeholder="Enter password">
+    <button onclick="checkPassword()">Unlock 💖</button>
+</div>
+
+<audio id="music" loop>
+    <source src="music.mp3" type="audio/mp3">
+</audio>
+
+<canvas id="effects"></canvas>
+
+<!-- QUESTIONS PAGES -->
+<div class="page active"><h1 id="typingText"></h1>
+<button class="yesBtn" onclick="nextPage()">YES 💖</button>
+<button class="noBtn" onmouseover="slide(this)">NO 💔</button>
+</div>
+
+<div class="page"><h1 id="typingText1"></h1>
+<button class="yesBtn" onclick="nextPage()">YES 💖</button>
+<button class="noBtn" onmouseover="slide(this)">NO 💔</button>
+</div>
+
+<div class="page"><h1 id="typingText2"></h1>
+<button class="yesBtn" onclick="nextPage()">YES 💖</button>
+<button class="noBtn" onmouseover="slide(this)">NO 💔</button>
+</div>
+
+<div class="page"><h1 id="typingText3"></h1>
+<button class="yesBtn" onclick="nextPage()">YES 💖</button>
+<button class="noBtn" onmouseover="slide(this)">NO 💔</button>
+</div>
+
+<div class="page"><h1 id="typingText4"></h1>
+<button class="yesBtn" onclick="finalPage()">YES 💖</button>
+<button class="noBtn" onmouseover="slide(this)">NO 💔</button>
+</div>
+
+<!-- VIDEO PAGE -->
+<div class="page" id="videoPage">
+    <h1>Our Beautiful Story ❤️🎥</h1>
+    <div class="videoContainer">
+        <video id="Video" controls>
+            <source src="https://drive.google.com/file/d/1s2Rk569AfAoEWD6dk1_Un0qprRdBgJan/view?usp=sharing" type="video/mp4">
+            Your browser does not support video.
+        </video>
+        <button id="playPauseBtn">▶</button>
+    </div>
+</div>
+
+<script>
+/* PASSWORD */
+function checkPassword(){
+    const password="11111";
+    if(document.getElementById("passInput").value===password){
+        document.getElementById("passwordScreen").style.display="none";
+        document.getElementById("music").play();
+        startTyping(0);
+    }else{
+        alert("Wrong password 😢");
+    }
+}
+
+/* QUESTIONS */
+const questions=[
+"Vita Mea ❤️ Are You Ready For Something Magical?",
+"Do I Make Your Heart Smile Every day? 😊",
+"Will You Always Stay By My Side? 🤝❤️",
+"Will We Build JSQUARE Empire Together? 💍✨",
+"Will You Still Love Me As Our Love Is Brand New? ❤️🌹"
+];
+
+function startTyping(i){
+    const id=i===0?"typingText":"typingText"+i;
+    const text=questions[i];
+    let x=0;
+    document.getElementById(id).innerHTML="";
+    function type(){
+        if(x<text.length){
+            document.getElementById(id).innerHTML+=text.charAt(x);
+            x++;setTimeout(type,70);
+        }
+    }
+    type();
+}
+
+let currentPage=0;
+const pages=document.querySelectorAll(".page");
+
+function nextPage(){
+    pages[currentPage].classList.remove("active");
+    currentPage++;
+    pages[currentPage].classList.add("active");
+    startTyping(currentPage);
+}
+
+function finalPage(){
+    pages[currentPage].classList.remove("active");
+    currentPage++;
+    pages[currentPage].classList.add("active");
+
+    setTimeout(()=>{
+        pages[currentPage].classList.remove("active");
+        document.getElementById("videoPage").classList.add("active");
+        document.getElementById("music").pause();
+
+        const vid=document.getElementById("Video");
+        const btn=document.getElementById("playPauseBtn");
+
+        vid.play().catch(()=>console.log("Video autoplay blocked"));
+
+        vid.onpause=()=>{btn.innerHTML="▶"; btn.style.opacity="1";};
+        vid.onplay=()=>{btn.innerHTML="⏸"; btn.style.opacity="0";};
+
+        btn.addEventListener("click",()=>{
+            if(vid.paused){vid.play();} else{vid.pause();}
+        });
+
+    },1000);
+}
+
+/* NO BUTTON SLIDE */
+function slide(btn){
+    btn.style.transform=`translate(${Math.random()*300-150}px,${Math.random()*200-100}px)`;
+}
+
+/* FLOATING HEARTS */
+setInterval(()=>{
+    let h=document.createElement("div");
+    h.innerHTML="❤️";
+    h.style.position="absolute";
+    h.style.left=Math.random()*window.innerWidth+"px";
+    h.style.top="100%";
+    document.body.appendChild(h);
+    let m=setInterval(()=>{
+        h.style.top=h.offsetTop-2+"px";
+        if(h.offsetTop<0){clearInterval(m); h.remove();}
+    },20);
+},500);
+</script>
+</body>
+</html>
